@@ -38,6 +38,6 @@ err := notifyxf.Recover(tkn, "some message")
 panic(err)
 ```
 
-## Example output
+## Example output - gin
 
 ![sample error](static/error.png)
