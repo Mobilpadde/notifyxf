@@ -5,19 +5,20 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"runtime"
+	"runtime/debug"
 
 	"github.com/gin-gonic/gin"
+	errs "github.com/go-errors/errors"
 )
 
 const (
 	url = "https://notifyxf.com/api/message"
 )
 
-// Message is to contain message Data for NotifyXF
-type Message struct {
+type message struct {
 	Token   string `json:"access_token"`
 	Message string `json:"message"`
 }
@@ -25,14 +26,14 @@ type Message struct {
 // Notify will notify with message `msg`
 func Notify(token, msg string) error {
 	if token == "" {
-		log.Fatalln(errors.New("no token specified"))
+		log.Fatalln(errors.New("`token` is empty"))
 	}
 
 	if msg == "" {
-		log.Fatalln(errors.New("no msg is empty"))
+		log.Fatalln(errors.New("`msg` is empty"))
 	}
 
-	dat := Message{
+	dat := message{
 		Token:   token,
 		Message: msg,
 	}
@@ -52,30 +53,27 @@ func Notify(token, msg string) error {
 	}
 
 	defer res.Body.Close()
-	body, _ := ioutil.ReadAll(res.Body)
-
-	fmt.Println(res)
-	fmt.Println(string(body))
-
 	return nil
 }
 
-// Middleware to use as a middleware for gin to notify errors with `Notify`
-func Middleware(token string) gin.HandlerFunc {
+// Recover to use as a middleware for gin to notify panics with `Notify`
+func Recover(token, title string) gin.HandlerFunc {
 	if token == "" {
-		log.Fatalln(errors.New("no token specified"))
+		panic(errors.New("no token specified"))
 	}
 
 	return func(c *gin.Context) {
-		c.Next()
-		ginErr := c.Errors.Last()
-		if ginErr == nil {
-			return
-		}
+		defer func() {
+			if err := recover(); err != nil {
+				debug.PrintStack()
+				pc, fn, line, _ := runtime.Caller(2)
+				err := Notify(token, fmt.Sprintf("Error in `%s` (%s[%s:%d]): `%v`\n\n%s", title, runtime.FuncForPC(pc).Name(), fn, line, err, errs.Wrap(err, 2).ErrorStack()))
+				if err != nil {
+					log.Println(err)
+				}
+			}
+		}()
 
-		err := Notify(token, ginErr.Error())
-		if err != nil {
-			log.Fatalln(err)
-		}
+		c.Next()
 	}
 }
