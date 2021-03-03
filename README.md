@@ -34,7 +34,7 @@ If you want to control what notifications you'll get, please use the `notifyxf.N
 ```go
 tkn := "...notifyxf token..."
 
-err := notifyxf.Recover(tkn, "some message")
+err := notifyxf.Notify(tkn, "some message")
 panic(err)
 ```
 
