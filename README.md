@@ -27,6 +27,17 @@ router.GET("/", func(c *gin.Context) {
 router.Run()
 ```
 
+## Normal usage
+
+If you want to control what notifications you'll get, please use the `notifyxf.Notify`-func.
+
+```go
+tkn := "...notifyxf token..."
+
+err := notifyxf.Recover(tkn, "some message")
+panic(err)
+```
+
 ## Example output
 
 ![sample error](static/error.png)
