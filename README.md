@@ -20,3 +20,5 @@ if err != nil {
 
 n.Notify("some message")
 ```
+
+For more information, take a look at the [docs](https://pkg.go.dev/github.com/Mobilpadde/notifyxf).
