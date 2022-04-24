@@ -1,43 +1,22 @@
-# gin notifyxf
+# NotifyXF
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/Mobilpadde/notifyxf.svg)](https://pkg.go.dev/github.com/Mobilpadde/notifyxf)
 
 ## What
 
-This is a package to make it easier to use [notifyxf.com](https://notifyxf.com) in gin golang applications.
+This is a package to make it easier to use [notifyxf.com](https://notifyxf.com) in projects.
 
-## Sample
-
-Either navigate to the [example](example/main.go) to check how to use or read along.
-
-## Gin usage
-
-To use this:
-
-```go
-router := gin.Default()
-
-tkn := "...notifyxf token..."
-name := "My Back-end Server"
-
-router.Use(notifyxf.Recover(tkn, name))
-
-router.GET("/", func(c *gin.Context) {
-    panic("error")
-})
-
-router.Run()
-```
-
-## Normal usage
+## Usage
 
 If you want to control what notifications you'll get, please use the `notifyxf.Notify`-func.
 
 ```go
 tkn := "...notifyxf token..."
 
-err := notifyxf.Notify(tkn, "some message")
-panic(err)
+n, err := notifyxf.NewNotifier(os.Getenv("NOTIFYXF_TOKEN"))
+if err != nil {
+    panic(err)
+}
+
+n.Notify("some message")
 ```
-
-## Example output - gin
-
-![sample error](static/error.png)

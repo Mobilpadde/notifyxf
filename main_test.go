@@ -1,13 +1,28 @@
 package notifyxf_test
 
 import (
-	"notifyxf"
 	"os"
 	"testing"
+
+	"github.com/Mobilpadde/notifyxf"
 )
 
-func TestNotify(t *testing.T) {
-	if err := notifyxf.Notify(os.Getenv("NOTIFYXF_TOKEN"), "my message"); err != nil {
-		t.Fatal(err.Error())
+func TestHelloWorld(t *testing.T) {
+	n, err := notifyxf.NewNotifier(os.Getenv("NOTIFYXF_TOKEN"))
+	if err != nil {
+		t.Fatal(err)
 	}
+
+	n.Notify("Hello, world!")
+	t.Log("Notified!")
+}
+
+func TestWithHandle(t *testing.T) {
+	n, err := notifyxf.NewNotifier(os.Getenv("NOTIFYXF_TOKEN"), notifyxf.WithHandle(os.Getenv("NOTIFYXF_HANDLE")))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	n.Notify("Hello, world!")
+	t.Log("Notified!")
 }
