@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Mobilpadde/notifyxf"
+	"github.com/Mobilpadde/notifyxf/v2"
 )
 
 func TestHelloWorld(t *testing.T) {

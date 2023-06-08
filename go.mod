@@ -1,3 +1,3 @@
-module github.com/Mobilpadde/notifyxf
+module github.com/Mobilpadde/notifyxf/v2
 
-go 1.15
+go 1.20
